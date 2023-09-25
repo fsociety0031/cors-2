@@ -41,7 +41,7 @@ app.use('/proxy_v2/', async (req, res, next) => {
     res.send(screenshot);
   } catch (error) {
     console.error('Erro ao acessar a página:', error);
-    res.status(500).send('Erro ao acessar a página');
+    res.status(500).send('Erro ao acessar a página', error);
   }
 })
 
