@@ -18,9 +18,7 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
-app.use('/proxy_v2/:url', (req, res, next) => {
-  let url = req.url = req.url.replace('/proxy_v2/', '/');
-  console.log(url);
+app.use('/', (req, res, next) => {
   axios.get("https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/")
   .then(function (response) {
       res.header("Access-Control-Allow-Origin", "https://cors.bohr.io/");
