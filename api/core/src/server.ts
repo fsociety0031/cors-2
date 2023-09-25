@@ -23,6 +23,7 @@ app.use('/proxy_v2/:url', (req, res, next) => {
   console.log(url);
   axios.get("https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/")
   .then(function (response) {
+      res.header("Access-Control-Allow-Origin", "https://cors.bohr.io/");
       res.send(response.data);
   })
   .catch(function (error) {
