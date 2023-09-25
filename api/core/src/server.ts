@@ -1,25 +1,20 @@
-import express, { Response, Request } from "express";
+//@ts-nocheck
+const express = require('express');
+const corsAnywhere = require('cors-anywhere');
 
-var app = express();
+const app = express();
 
-const users = [
-  { id: 1, name: "Lucas" },
-  { id: 2, name: "Eric" },
-  { id: 3, name: "Ana" },
-];
+// Configure o CORS Anywhere com as opções desejadas
+const corsOptions = {
+  originWhitelist: [], // Deixe vazio para permitir qualquer origem
+  requireHeaders: [],  // Deixe vazio para permitir solicitações sem cabeçalhos
+};
 
+const corsProxy = corsAnywhere.createServer(corsOptions);
 
-app.get("/", function (req: Request, res: Response) {
-  res.send("Bohr Express template");
-});
-
-app.get("/users", function (req: Request, res: Response) {
-  res.send(users);
-});
-
-app.get("/users/:userId", function (req: Request, res: Response) {
-  const user = users.find((user) => user.id === parseInt(req.params.userId));
-  res.send(user);
+app.use('/proxy/:url', (req, res, next) => {
+  req.url = req.url.replace('/proxy/', '/'); // Strip "/proxy" from the front of the URL.
+  corsProxy.emit('request', req, res);
 });
 
 if (!module.parent) {
