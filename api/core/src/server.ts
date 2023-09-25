@@ -1,7 +1,7 @@
 //@ts-nocheck
 const express = require('express');
 const corsAnywhere = require('cors-anywhere');
-const axios = require('axios')
+const puppeteer = require('puppeteer');
 
 const app = express();
 
@@ -18,15 +18,31 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
-app.use('/', (req, res, next) => {
-  axios.get("https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/")
-  .then(function (response) {
-      res.header("Access-Control-Allow-Origin", "https://cors.bohr.io/");
-      res.send(response.data);
-  })
-  .catch(function (error) {
-      console.log(error);
-  });
+app.use('/proxy_v2/', async (req, res, next) => {
+  try {
+    // Inicialize o Puppeteer
+    const browser = await puppeteer.launch({headless: false});
+    const page = await browser.newPage();
+
+    // URL da página que você deseja acessar
+    const url = 'https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/';
+
+    // Navegue até a página
+    await page.goto(url);
+
+    // Capture uma captura de tela da página
+    const screenshot = await page.screenshot();
+
+    // Feche o navegador Puppeteer
+    await browser.close();
+
+    // Envie a captura de tela como resposta
+    res.set('Content-Type', 'image/png');
+    res.send(screenshot);
+  } catch (error) {
+    console.error('Erro ao acessar a página:', error);
+    res.status(500).send('Erro ao acessar a página');
+  }
 })
 
 if (!module.parent) {
