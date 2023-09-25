@@ -7,7 +7,7 @@ const app = express();
 // Configure o CORS Anywhere com as opções desejadas
 const corsOptions = {
   originWhitelist: [], // Deixe vazio para permitir qualquer origem
-  requireHeaders: [],  // Deixe vazio para permitir solicitações sem cabeçalhos
+  requireHeaders: ['origin', 'x-requested-with'],  // Deixe vazio para permitir solicitações sem cabeçalhos
 };
 
 const corsProxy = corsAnywhere.createServer(corsOptions);
