@@ -1,13 +1,14 @@
 //@ts-nocheck
 const express = require('express');
 const corsAnywhere = require('cors-anywhere');
+const axios = require('axios')
 
 const app = express();
 
 // Configure o CORS Anywhere com as opções desejadas
 const corsOptions = {
   originWhitelist: [], // Deixe vazio para permitir qualquer origem
-  requireHeaders: ['origin', 'access-control-request-method', 'x-requested-with', 'access-control-request-headers'],  // Deixe vazio para permitir solicitações sem cabeçalhos
+  requireHeaders: ['origin', 'access-control-request-method', 'x-requested-with', 'access-control-request-headers', 'access-control-allow-origin'],  // Deixe vazio para permitir solicitações sem cabeçalhos
 };
 
 const corsProxy = corsAnywhere.createServer(corsOptions);
@@ -17,9 +18,21 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
+app.use('/proxy_v2/:url', (req, res, next) => {
+  let url = req.url = req.url.replace('/proxy_v2/', '/');
+  console.log(url);
+  axios.get("https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/")
+  .then(function (response) {
+      res.send(response.data);
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+})
+
 if (!module.parent) {
-  app.listen(3000);
-  console.log("Express started on port 3000");
+  app.listen(3001);
+  console.log("Express started on port 3001");
 }
 
 export default app;
