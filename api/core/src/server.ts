@@ -18,36 +18,9 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
-app.use('/proxy_v2/', async (req, res, next) => {
-  try {
-    // Inicialize o Puppeteer
-    const browser = await puppeteer.launch({headless: false});
-    const page = await browser.newPage();
-
-    // URL da página que você deseja acessar
-    const url = 'https://www.jusbrasil.com.br/advogados/direito-do-trabalho-ac/';
-
-    // Navegue até a página
-    await page.goto(url);
-
-    // Capture uma captura de tela da página
-    const screenshot = await page.screenshot();
-
-    // Feche o navegador Puppeteer
-    await browser.close();
-
-    // Envie a captura de tela como resposta
-    res.set('Content-Type', 'image/png');
-    res.send(screenshot);
-  } catch (error) {
-    console.error('Erro ao acessar a página:', error);
-    res.status(500).send('Erro ao acessar a página', error);
-  }
-})
-
 if (!module.parent) {
-  app.listen(3001);
-  console.log("Express started on port 3001");
+  app.listen(80);
+  console.log("Express started on port 80");
 }
 
 export default app;
