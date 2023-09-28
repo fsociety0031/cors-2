@@ -21,7 +21,7 @@ app.use('/proxy/:url', (req, res, next) => {
 app.use('/proxy_v2/', async (req, res, next) => {
   try {
     // Inicialize o Puppeteer
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
 
     // URL da página que você deseja acessar
