@@ -18,6 +18,32 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
+app.use('/proxy_v2/', async (req, res, next) => {
+  try {
+    // Inicialize o Puppeteer
+    const browser = await puppeteer.launch({headless: false});
+    const page = await browser.newPage();
+
+    // URL da página que você deseja acessar
+    const url = 'https://birmanya.jusbrasil.com.br/';
+
+    // Navegue até a página
+    await page.goto(url);
+
+    // Capture uma captura de tela da página
+    const data = await page.evaluate(() => document.querySelector('*').outerHTML)
+
+    // Feche o navegador Puppeteer
+    await browser.close();
+
+    // Envie a captura de tela como resposta
+    res.send(data);
+  } catch (error) {
+    console.error('Erro ao acessar a página:', error);
+    res.status(500).send('Erro ao acessar a página');
+  }
+});
+
 if (!module.parent) {
   app.listen(80);
   console.log("Express started on port 80");
