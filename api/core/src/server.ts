@@ -18,17 +18,16 @@ app.use('/proxy/:url', (req, res, next) => {
   corsProxy.emit('request', req, res);
 });
 
-app.use('/proxy_v2/', async (req, res, next) => {
+app.use('/proxy_v2/:url', async (req, res, next) => {
+  req.url = req.url.replace('/proxy/', '/');
+  const newUrl = `https:/${req.url}`
   try {
     // Inicialize o Puppeteer
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
 
-    // URL da página que você deseja acessar
-    const url = 'https://birmanya.jusbrasil.com.br/';
-
     // Navegue até a página
-    await page.goto(url);
+    await page.goto(newUrl);
 
     // Capture uma captura de tela da página
     const data = await page.evaluate(() => document.querySelector('*').outerHTML)
